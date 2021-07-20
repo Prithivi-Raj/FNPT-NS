@@ -1,0 +1,50 @@
+...One-way coupled FNPT-RANS model for wave-structure interaction problems...
+FNPT ----> IITM-FNPT2D
+RANS ----> IITM-RANS3D
+
+Minimalistic list of inputs to be provided by the user in different files:
+
+(1) SOLITARY_WAVE_PADDLE_DISP.CPP
+	(a) H ---> soliton wave-height (m)
+	(b) d ---> water depth (m)
+
+(2) FEMINPUT.dat (IITM-FNPT2D)
+	(a) line "7" ---> water depth (m)
+	(b) line "8" ---> domain length (m)
+	(c) line "12" ---> number of time-steps
+	(d) line "13" ---> time-step size (s)
+	(e) line "15" ---> regridding (~80 for steep solitons ; ~30 for focused waves)
+	(f) line "21" ---> wave-gauge locations (m) 
+	(g) lines "24" ---> starting and ending x-locations for FNPT data extraction, number of vertical and horizontal FNPT layers to be extracted
+
+(3) FNPT_to_NS.CPP
+	(a) d ---> water depth (m)
+	(b) L ---> length of the NS domain (m)
+	(c) H ---> height of the NS domain (m)
+	(d) NX ---> total number of NS cells along x [Note: do not change NX_NS - it's hard-coded]
+	(e) NZ ---> total number of NS cells along z [Note: do not change NZ_NS - it's hard-coded]
+	(f) NX_FNPT ---> number of vertical FNPT layers extracted in "Output_PHIT.dat" (has to be consistent with "FEMINPUT.dat")
+	(g) NZ_FNPT ---> number of horizontal FNPT layers extracted in "Output_PHIT.dat" (has to be consistent with "FEMINPUT.dat")
+	(h) N ---> number of time-steps executed by FNPT (is always equal to (total lines in "Output_PHIT.dat")/(NX_FNPT*NZ_FNPT))
+
+(4) VOF_INIT.c
+	(a) NX,NY,NZ ---> number of NS cells along the x,y,z directions respectively
+	(b) a_cyl,b_cyl ---> (x,y) coordinates of the center of the cylinder (m)
+	(c) r ---> radius of the cylinder (m)
+	(d) L,B,H ---> Length, Width and Height of the NS domain (m)
+
+(5) functions.h
+	NX,NY,NZ ---> number of NS cells along the x,y,z directions respectively
+
+(6) 3-D_TWO-PHASE-NSE.CPP
+	(a) EOPC_ERROR ---> RMS convergence criterion for pressure-correction equation (recommended range: 1e-06 to 1e-08)
+	(b) L,B,H ---> Length, Width and Height of the NS domain (m)
+	(c) water_depth ---> water depth (m)
+	(d) init_time_step ---> initial time-step size for the NS simulation (s)
+	(e) dt_FNPT ---> time-step size for the FNPT simulation (s) [Note: init_time_step <= dt_FNPT]
+	(f) C_PERMIT ---> maximum permissible Courant number [Note: do not exceed 0.25]
+	(g) tme_WRITE ---> starting time for data-file writing
+	(h) freq_WRITE ---> frequency of data-file writing
+	(i) schbln ---> fraction of the limiter scheme for blended momentum advection	
+
+

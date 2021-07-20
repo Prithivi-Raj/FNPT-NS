@@ -1,0 +1,43 @@
+03rd March 2021......................................................................................................................................
+Code in question:				3-D_TWO-PHASE-NSE.CPP
+Description of error:			VOF boundary condition error at lines "513" and "777"
+Existing line:					f[i][IMG-1][k]=2.0*f[i][IMG][k]-w[i][IMG+1][k];
+Corrected to:					f[i][IMG-1][k]=2.0*f[i][IMG][k]-f[i][IMG+1][k];
+
+26th May 2021........................................................................................................................................
+Code in question: 				3-D_TWO-PHASE-NSE.CPP
+Description of error:			Whilst global Courant number is restricted to never exceed C_PERMIT(=0.2 generally)...the RANS time-step-size (dt) may EXCEED the FNPT time-step-size (dt_FNPT) which would cause an error in interpolation. So the variable time-stepping routine (lines "259" to "269") has been modified as follows:
+Existing lines:
+//VARIABLE TIME-STEPPING (dt=init_time_step unless Courant exceeds C_PERMIT)
+if (trigger==0 && maxcour<C_PERMIT)								//keep equal to the initial time-step until the trigger is activated
+	dt=init_time_step;
+else
+{
+	if (maxcour<C_PERMIT)
+	dt=1.01*dt;													//don't directly revert back to "init_time_step" as "maxcour" may exceed "C_PERMIT"...rather ramp up "dt" slowly
+	else
+	dt=C_PERMIT*mincel/maxvel;
+	trigger=1;
+}
+Corrected to:
+//VARIABLE TIME-STEPPING (dt=init_time_step unless Courant exceeds C_PERMIT)
+if (trigger==0 && maxcour<C_PERMIT)								//keep equal to the initial time-step until the trigger is activated
+	dt=init_time_step;
+else
+{
+	if (maxcour<C_PERMIT)
+	{
+	dt=1.01*dt;													//don't directly revert back to "init_time_step" as "maxcour" may exceed "C_PERMIT"...rather ramp up "dt" slowly
+		if (dt>init_time_step)
+		dt=init_time_step;										//ensure that NS time-step size does not exceed dt_FNPT
+	}
+	else
+	{
+	dt=C_PERMIT*mincel/maxvel;
+		if (dt>init_time_step)
+		dt=init_time_step;										//ensure that NS time-step size does not exceed dt_FNPT
+	}
+	trigger=1;
+}
+
+

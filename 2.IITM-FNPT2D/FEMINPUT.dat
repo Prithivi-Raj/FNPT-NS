@@ -1,0 +1,28 @@
+!INPUT DATA FILE - Created through WaveGen
+!***************************
+!MORE DETAILS ABOUT THE FULLY NONLINEAR POTENTIAL FLOW THEORY AND NUMERICAL BACKGROUND CAN BE FOUND IN
+! V. SRIRAM(2008) FINITE ELEMENT SIMULATION OF NONLINEAR WATER WAVES, PH.D. THESIS, IIT Madras, INDIA
+!*************************** 
+1   															! Hotstart
+1.d0,1.d0 														! water depth, variable water depth
+40.d0   														! length of the tank
+1             													! Input from time series
+1.d0															! Wave-period in case of a Regular wave
+wavePaddle.dat													! Name of the WM-motion input file
+6001  															! total simulation time in cycle / no. of time-steps
+0.0025 															! time-step-size
+0,0,1500  														! START TIME, END TIME OF VELOCITY EXTRACTION, INTERVAL OF SURFACE PROFILE ALONG TANK
+80  															! regridding of the free surface
+4 																! type of velocity calculations
+-1 																! beach (sponge-layer) length if -1 vertical wall
+1600 															! number of nodes free surface (L/40)
+20 																! number of vertical nodes (>12)
+1.5d0 															! alpha coefficient
+2.500d0, 5.700d0, 10.000d0, 15.000d0, 20.000d0, 30.000d0 		! wave gauge locations
+RK4 															! method of integration
+Output_															! name file of the file.
+5,5.18,9,21 													! STARTING, ENDING (= STARTING + dx_NS * 4.5), (NUMBER OF VERTICAL LAYERS IN X - 1), NUMBER OF HORIZONTAL LAYERS IN Z DIRECTION
+2  																! NUMBER OF PRESSURE AND VELOCITY OUTPUTS
+20.00000000,    -0.50000000 									! COORDINATES
+21.00000000,    -0.50000000
+10.D0,12.D0,200.D0,201.D0  										! SLOPE LOCATIONS
